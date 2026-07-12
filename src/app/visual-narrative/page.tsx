@@ -102,7 +102,7 @@ export default function VisualNarrativePage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24">
+      <main className="pt-24 flex-1">
         {/* Hero */}
         <section className="py-16 px-6">
           <div className="section-container">

@@ -19,6 +19,7 @@
   --muted-light: #B5B5B5;
   --surface: #FDFAF5;
   --surface-alt: #EDE8DF;
+  --footer-bg: #E4DED4;
   --border: #D4CFC6;
   --card-bg: rgba(253, 250, 245, 0.85);
   --card-border: rgba(44, 62, 107, 0.12);
@@ -42,6 +43,7 @@
   --muted-light: #9CA3AF;
   --surface: #162040;
   --surface-alt: #1A2748;
+  --footer-bg: #131C38;
   --border: #2A3A5C;
   --card-bg: rgba(22, 32, 64, 0.85);
   --card-border: rgba(123, 147, 204, 0.15);
