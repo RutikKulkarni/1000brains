@@ -164,7 +164,7 @@ export default function TraitsWheel() {
           </motion.div>
 
           {/* Mobile grid + Info panel */}
-          <div className="w-full lg:w-auto">
+          <div className="w-full lg:w-[320px] shrink-0">
             {/* Mobile grid */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 md:hidden mb-6">
               {TRAITS.map((trait, i) => (
@@ -191,7 +191,7 @@ export default function TraitsWheel() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 min-w-[280px]"
+                  className="glass-card p-6"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent font-heading font-bold text-lg">
@@ -211,7 +211,7 @@ export default function TraitsWheel() {
             </AnimatePresence>
 
             {activeTrait === null && (
-              <div className="glass-card p-6 min-w-[280px] text-center hidden lg:block">
+              <div className="glass-card p-6 text-center hidden lg:block">
                 <p className="text-sm text-muted font-body">
                   Hover over a trait to explore
                 </p>
