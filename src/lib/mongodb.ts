@@ -10,12 +10,6 @@ declare global {
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable in .env.local"
-  );
-}
-
 /**
  * Global singleton for the MongoDB connection.
  * In development Next.js hot-reloads, so we cache the connection
@@ -28,6 +22,12 @@ if (!cached) {
 }
 
 export async function connectDB(): Promise<typeof mongoose> {
+  if (!MONGODB_URI) {
+    throw new Error(
+      "Please define the MONGODB_URI environment variable in .env.local"
+    );
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
