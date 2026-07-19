@@ -6,14 +6,38 @@ import { TRAITS } from "@/types";
 import { ArrowDown } from "lucide-react";
 
 export default function HeroSection() {
-  const [activeTraitIndex, setActiveTraitIndex] = useState(0);
+  const [typedText, setTypedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [loopNum, setLoopNum] = useState(0);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+
+  const activeTraitIndex = loopNum % TRAITS.length;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTraitIndex((prev) => (prev + 1) % TRAITS.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
+    const fullText = TRAITS[activeTraitIndex].name;
+
+    const handleType = () => {
+      setTypedText(
+        isDeleting
+          ? fullText.substring(0, typedText.length - 1)
+          : fullText.substring(0, typedText.length + 1)
+      );
+
+      if (!isDeleting && typedText === fullText) {
+        setTimeout(() => setIsDeleting(true), 1500);
+      } else if (isDeleting && typedText === "") {
+        setIsDeleting(false);
+        setLoopNum((prev) => prev + 1);
+        setTypingSpeed(150);
+      }
+    };
+
+    const timer = setTimeout(
+      handleType,
+      isDeleting ? 50 : typingSpeed
+    );
+    return () => clearTimeout(timer);
+  }, [typedText, isDeleting, activeTraitIndex, typingSpeed]);
 
   return (
     <section className="relative flex flex-col items-center justify-center min-h-screen px-6 text-center overflow-hidden">
@@ -45,74 +69,56 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative z-10"
+        className="relative z-10 w-full max-w-4xl flex flex-col items-center"
       >
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-muted text-xs sm:text-sm tracking-[0.3em] uppercase mb-6 font-body"
+          className="text-muted text-xs sm:text-sm tracking-[0.3em] uppercase mb-8 font-body"
         >
           Professor of Practice in Design · IIT Gandhinagar
         </motion.p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.7 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold mb-6 leading-[0.95]"
-        >
-          <span className="gradient-text">Sameer</span>
-          <br />
-          <span className="text-foreground">Sahasrabudhe</span>
-        </motion.h1>
-
-        {/* Animated trait cycling */}
-        <div className="h-10 flex items-center justify-center mb-8 overflow-hidden">
-          <motion.p
-            key={activeTraitIndex}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className="text-lg md:text-xl text-accent font-body font-medium"
-          >
-            {TRAITS[activeTraitIndex].name}
-          </motion.p>
-        </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-base md:text-lg text-muted max-w-xl mx-auto mb-10 font-body leading-relaxed"
-        >
-          10 traits · 1 digital identity · 100,000+ learners worldwide
-        </motion.p>
-
-        {/* Trait pills */}
+        {/* Horizontal Grid Name & Trait Typing Animation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="flex flex-wrap justify-center gap-2.5 max-w-3xl mx-auto"
+          transition={{ delay: 0.4, duration: 0.7 }}
+          className="grid grid-cols-[auto_auto_1fr] md:grid-cols-[1fr_auto_1fr] gap-x-3 md:gap-x-6 items-center max-w-full px-4 mb-10 mx-auto"
         >
-          {TRAITS.map((trait, i) => (
-            <motion.span
-              key={trait.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.1 + i * 0.06 }}
-              className={`px-4 py-2 text-sm font-body rounded-full border backdrop-blur-sm cursor-default transition-all duration-300 ${
-                i === activeTraitIndex
-                  ? "bg-accent text-white border-accent shadow-lg shadow-accent/20"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] text-primary hover:border-accent/40 hover:text-accent"
-              }`}
-            >
-              {trait.name}
-            </motion.span>
-          ))}
+          {/* Row 1 */}
+          <div className="text-right">
+            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold gradient-text leading-[0.95] tracking-tight">
+              Sameer
+            </span>
+          </div>
+          <div className="text-center">
+            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-light text-muted/20 leading-[0.95]">
+              |
+            </span>
+          </div>
+          <div className="text-left flex items-center min-h-[1.2em]">
+            <span className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-body font-semibold text-accent leading-[0.95] whitespace-nowrap tracking-tight">
+              {typedText}
+              <span className="inline-block w-[2px] md:w-[3px] h-[0.8em] ml-1 bg-accent animate-[pulse_1s_infinite]" />
+            </span>
+          </div>
+
+          {/* Row 2 */}
+          <div className="text-right mt-2">
+            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-foreground leading-[0.95] tracking-tight">
+              Sahasrabudhe
+            </span>
+          </div>
+          <div className="text-center mt-2">
+            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-light text-muted/20 leading-[0.95] mt-2">
+              |
+            </span>
+          </div>
+          <div className="mt-2" />
         </motion.div>
+
       </motion.div>
 
       {/* Scroll indicator */}
