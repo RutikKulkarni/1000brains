@@ -80,43 +80,42 @@ export default function HeroSection() {
           Professor of Practice in Design · IIT Gandhinagar
         </motion.p>
 
-        {/* Horizontal Grid Name & Trait Typing Animation */}
+        {/* Mobile Layout (centered stacked, hidden on desktop/tablet) */}
+        <div className="flex md:hidden flex-col items-center text-center px-4 mb-10 mx-auto font-heading font-bold">
+          <div className="text-3xl sm:text-5xl leading-[0.95] text-foreground">
+            <div className="gradient-text">Sameer</div>
+            <div className="mt-2">Sahasrabudhe</div>
+          </div>
+          <div className="w-[2px] h-8 bg-muted/20 my-4" />
+          <div className="text-2xl sm:text-4xl text-accent font-semibold leading-[0.95] min-h-[1.2em] flex items-center justify-center">
+            <span>
+              {typedText}
+              <span className="inline-block w-[3px] h-[0.8em] ml-2 bg-accent animate-[pulse_1s_infinite] align-middle" />
+            </span>
+          </div>
+        </div>
+
+        {/* Desktop/Tablet Layout (centered horizontal divider, hidden on mobile) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7 }}
-          className="grid grid-cols-[auto_auto_1fr] md:grid-cols-[1fr_auto_1fr] gap-x-3 md:gap-x-6 items-center max-w-full px-4 mb-10 mx-auto"
+          style={{ gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}
+          className="hidden md:grid w-full max-w-5xl px-4 mb-10 mx-auto font-heading font-bold text-6xl lg:text-8xl"
         >
-          {/* Row 1 */}
-          <div className="text-right">
-            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold gradient-text leading-[0.95] tracking-tight">
-              Sameer
-            </span>
-          </div>
-          <div className="text-center">
-            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-light text-muted/20 leading-[0.95]">
-              |
-            </span>
-          </div>
-          <div className="text-left flex items-center min-h-[1.2em]">
-            <span className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-body font-semibold text-accent leading-[0.95] whitespace-nowrap tracking-tight">
-              {typedText}
-              <span className="inline-block w-[2px] md:w-[3px] h-[0.8em] ml-1 bg-accent animate-[pulse_1s_infinite]" />
-            </span>
+          {/* Left Column: Stacked right-aligned names with continuous right border */}
+          <div className="text-right pr-6 md:pr-10 border-r-2 border-[var(--border)] flex flex-col items-end justify-center leading-[0.95]">
+            <span className="gradient-text">Sameer</span>
+            <span className="text-foreground mt-3 md:mt-4">Sahasrabudhe</span>
           </div>
 
-          {/* Row 2 */}
-          <div className="text-right mt-2">
-            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-foreground leading-[0.95] tracking-tight">
-              Sahasrabudhe
+          {/* Right Column: Vertically centered typing traits with large matching font size */}
+          <div className="text-left pl-6 md:pl-10 flex items-center justify-start leading-[0.95] text-accent font-semibold">
+            <span className="whitespace-nowrap">
+              {typedText}
+              <span className="inline-block w-[3px] md:w-[5px] h-[0.8em] ml-2 bg-accent animate-[pulse_1s_infinite] align-middle" />
             </span>
           </div>
-          <div className="text-center mt-2">
-            <span className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-light text-muted/20 leading-[0.95] mt-2">
-              |
-            </span>
-          </div>
-          <div className="mt-2" />
         </motion.div>
 
       </motion.div>
