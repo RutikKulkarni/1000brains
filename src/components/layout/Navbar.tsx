@@ -50,9 +50,7 @@ export default function Navbar() {
             href="/"
             className="flex items-center gap-2 group"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <Brain className="w-5 h-5 text-white" />
-            </div>
+            <Brain className="w-7 h-7 text-accent group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
             <span className="font-heading font-bold text-lg text-foreground hidden sm:block">
               1000<span className="text-accent">brains</span>
             </span>
