@@ -7,12 +7,6 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { Film, FlaskConical, Globe, Sparkles, ArrowRight } from "lucide-react";
 
 const headIcons = [Film, FlaskConical, Globe, Sparkles];
-const headColors = [
-  "from-rose-500 to-pink-600",
-  "from-blue-500 to-cyan-600",
-  "from-emerald-500 to-green-600",
-  "from-amber-500 to-orange-600",
-];
 
 export default function PortfolioCards() {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
@@ -36,10 +30,9 @@ export default function PortfolioCards() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {PORTFOLIO_HEADS.map((head, i) => {
             const Icon = headIcons[i];
-            const color = headColors[i];
             return (
               <motion.div
                 key={head.slug}
@@ -49,42 +42,41 @@ export default function PortfolioCards() {
               >
                 <Link
                   href={`/${head.slug}`}
-                  className="glass-card p-8 flex flex-col h-full group relative overflow-hidden"
+                  className="glass-card p-8 flex flex-col h-full group relative overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:border-accent/40 hover:-translate-y-1.5"
                 >
-                  {/* Background gradient on hover */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-500`}
-                  />
+                  {/* Blueprint grid effect in background */}
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:24px_24px] opacity-[0.04] group-hover:opacity-[0.08] transition-opacity duration-500" />
+                  
+                  {/* Glow effect */}
+                  <div className="absolute -right-24 -top-24 w-48 h-48 rounded-full bg-accent/5 blur-3xl group-hover:bg-accent/15 transition-all duration-500" />
 
-                  <div className="relative z-10">
-                    <div
-                      className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <Icon className="w-6 h-6 text-white" />
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="w-12 h-12 rounded-2xl bg-accent/5 border border-accent/15 flex items-center justify-center mb-6 group-hover:bg-accent/15 group-hover:border-accent/30 group-hover:scale-110 transition-all duration-300">
+                      <Icon className="w-6 h-6 text-accent" />
                     </div>
 
-                    <h3 className="text-xl font-heading font-semibold mb-2 group-hover:text-accent transition-colors duration-200">
+                    <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 text-foreground group-hover:text-accent transition-colors duration-300">
                       {head.title}
                     </h3>
 
-                    <p className="text-muted text-sm mb-5 font-body leading-relaxed">
+                    <p className="text-muted text-sm mb-6 font-body leading-relaxed">
                       {head.subtitle}
                     </p>
 
-                    <div className="flex flex-wrap gap-2 mb-5">
+                    <div className="flex flex-wrap gap-2 mb-6">
                       {head.traits.map((trait) => (
                         <span
                           key={trait}
-                          className="text-xs px-3 py-1 rounded-full bg-primary/8 text-primary font-body border border-primary/10"
+                          className="text-xs px-3 py-1 rounded-lg bg-accent/5 text-accent font-mono border border-accent/10 group-hover:bg-accent/10 transition-colors"
                         >
                           {trait}
                         </span>
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm text-accent font-body font-medium mt-auto">
-                      <span>Explore</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                    <div className="flex items-center gap-2 text-sm text-accent font-body font-semibold mt-auto group/btn">
+                      <span>Explore Dimension</span>
+                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-200" />
                     </div>
                   </div>
                 </Link>

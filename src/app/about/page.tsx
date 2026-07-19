@@ -126,7 +126,7 @@ export default function AboutPage() {
                   <div className="flex flex-wrap gap-3">
                     <a
                       href="#contact"
-                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white font-body font-medium text-sm hover:bg-accent-dark transition-colors shadow-lg shadow-accent/20"
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent !text-white font-body font-medium text-sm hover:bg-accent-dark transition-colors shadow-lg shadow-accent/20"
                     >
                       <Mail className="w-4 h-4" />
                       Get in Touch

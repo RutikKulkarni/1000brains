@@ -18,13 +18,11 @@ import {
   Compass,
 } from "lucide-react";
 
-// LCM Framework steps
 const lcmSteps = [
   {
     id: "discovery",
     label: "Discovery",
     icon: Compass,
-    color: "from-blue-500 to-indigo-500",
     description:
       "Learners explore new concepts through curiosity-driven engagement with multimedia content and real-world problems.",
   },
@@ -32,7 +30,6 @@ const lcmSteps = [
     id: "interaction",
     label: "Interaction",
     icon: MessageSquare,
-    color: "from-emerald-500 to-teal-500",
     description:
       "Collaborative dialogue, peer discussions, and teacher-guided conversations deepen understanding of concepts.",
   },
@@ -40,7 +37,6 @@ const lcmSteps = [
     id: "creation",
     label: "Creation",
     icon: Lightbulb,
-    color: "from-accent to-orange-500",
     description:
       "Learners synthesize knowledge by creating artifacts — projects, presentations, prototypes, or artworks.",
   },
@@ -48,7 +44,6 @@ const lcmSteps = [
     id: "reflection",
     label: "Reflection",
     icon: RefreshCw,
-    color: "from-purple-500 to-violet-500",
     description:
       "Critical self-assessment and metacognitive practice that feeds into the next discovery cycle.",
   },
@@ -145,8 +140,8 @@ export default function EdtechLabPage() {
                 {lcmSteps.map((step, i) => {
                   const angle = (i * 360) / lcmSteps.length - 90;
                   const rad = (angle * Math.PI) / 180;
-                  const x = 140 + 110 * Math.cos(rad);
-                  const y = 140 + 110 * Math.sin(rad);
+                  const x = 160 + 110 * Math.cos(rad);
+                  const y = 160 + 110 * Math.sin(rad);
                   const Icon = step.icon;
                   const isActive = activeLCM === i;
 
@@ -156,8 +151,8 @@ export default function EdtechLabPage() {
                       onClick={() => setActiveLCM(i)}
                       className={`absolute w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
                         isActive
-                          ? `bg-gradient-to-br ${step.color} text-white shadow-xl scale-110`
-                          : "bg-[var(--card-bg)] border border-[var(--card-border)] text-muted hover:text-foreground"
+                          ? "bg-accent/10 border-2 border-accent text-accent shadow-lg shadow-accent/20 scale-110"
+                          : "bg-[var(--card-bg)] border border-[var(--card-border)] text-muted hover:text-accent hover:border-accent/40"
                       }`}
                       style={{
                         left: x - 32,
@@ -198,21 +193,24 @@ export default function EdtechLabPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={isLCMVisible ? { opacity: 1, y: 0 } : {}}
                         transition={{ delay: 0.3 + i * 0.1 }}
-                        className={`glass-card p-5 text-left transition-all duration-300 ${
+                        className={`relative overflow-hidden glass-card p-5 text-left transition-all duration-300 rounded-2xl ${
                           isActive ? "ring-2 ring-accent/40 shadow-lg" : ""
-                        }`}
+                        } group hover:border-accent/30`}
                       >
-                        <div className="flex items-center gap-3 mb-2">
-                          <div
-                            className={`w-8 h-8 rounded-lg bg-gradient-to-br ${step.color} flex items-center justify-center`}
-                          >
-                            <Icon className="w-4 h-4 text-white" />
+                        {/* Blueprint grid effect in background */}
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-300" />
+                        
+                        <div className="relative z-10 flex flex-col h-full">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-accent/5 border border-accent/10 flex items-center justify-center text-accent group-hover:bg-accent/15 group-hover:scale-105 transition-all duration-300">
+                              <Icon className="w-4.5 h-4.5" />
+                            </div>
+                            <h3 className="font-heading font-semibold text-foreground group-hover:text-accent transition-colors duration-300">{step.label}</h3>
                           </div>
-                          <h3 className="font-heading font-semibold">{step.label}</h3>
+                          <p className="text-sm text-muted font-body leading-relaxed mt-1">
+                            {step.description}
+                          </p>
                         </div>
-                        <p className="text-sm text-muted font-body leading-relaxed">
-                          {step.description}
-                        </p>
                       </motion.button>
                     );
                   })}
@@ -221,19 +219,22 @@ export default function EdtechLabPage() {
             </div>
           </div>
         </section>
-
+ 
         {/* EdTech Society */}
         <section className="py-20 px-6">
           <div className="section-container">
-            <div className="glass-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Users className="w-10 h-10 text-white" />
+            <div className="relative overflow-hidden glass-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 rounded-3xl group transition-all duration-300 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5">
+              {/* Blueprint grid effect in background */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:24px_24px] opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-300" />
+              
+              <div className="relative z-10 w-16 h-16 rounded-2xl bg-accent/5 border border-accent/15 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/15 group-hover:border-accent/30 group-hover:scale-105 transition-all duration-300">
+                <Users className="w-8 h-8 text-accent" />
               </div>
-              <div>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3">
+              <div className="relative z-10">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3 text-foreground group-hover:text-accent transition-colors duration-300">
                   EdTech Society
                 </h2>
-                <p className="text-muted font-body leading-relaxed max-w-2xl">
+                <p className="text-muted font-body leading-relaxed max-w-2xl text-sm md:text-base">
                   Leading institutional efforts to integrate technology into pedagogy. The EdTech Society fosters innovation in teaching methodologies, promotes best practices in digital education, and builds a community of forward-thinking educators committed to transforming learning experiences.
                 </p>
               </div>
@@ -264,46 +265,54 @@ export default function EdtechLabPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isResearchVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.1 }}
-                  className="glass-card p-6 flex flex-col"
+                  className="relative overflow-hidden glass-card p-6 flex flex-col group rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:border-accent/40 hover:-translate-y-1.5"
                 >
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-body font-medium ${
-                        paper.status === "published"
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                          : paper.status === "funded"
-                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                          : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                      }`}
-                    >
-                      {paper.status === "funded"
-                        ? `Funded by ${paper.fundingSource}`
-                        : paper.status.charAt(0).toUpperCase() + paper.status.slice(1)}
-                    </span>
-                    <span className="text-xs text-muted font-body">{paper.year}</span>
-                  </div>
+                  {/* Blueprint grid effect in background */}
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-300" />
+                  
+                  {/* Glow effect */}
+                  <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-accent/5 blur-3xl group-hover:bg-accent/10 transition-all duration-300" />
 
-                  <h3 className="font-heading font-semibold mb-2 leading-snug">
-                    {paper.title}
-                  </h3>
-
-                  <p className="text-sm text-muted font-body mb-2">
-                    {paper.authors.join(", ")}
-                  </p>
-
-                  <p className="text-sm text-muted/70 font-body italic mb-4">
-                    {paper.journal}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 mt-auto">
-                    {paper.tags.map((tag) => (
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex items-center gap-2 mb-3">
                       <span
-                        key={tag}
-                        className="text-xs px-2 py-0.5 rounded-full bg-primary/8 text-primary font-body"
+                        className={`text-xs px-2.5 py-1 rounded-lg font-mono font-semibold tracking-wider ${
+                          paper.status === "published"
+                            ? "bg-emerald-500/5 text-emerald-500 border border-emerald-500/10"
+                            : paper.status === "funded"
+                            ? "bg-amber-500/5 text-amber-500 border border-amber-500/10"
+                            : "bg-blue-500/5 text-blue-500 border border-blue-500/10"
+                        }`}
                       >
-                        {tag}
+                        {paper.status === "funded"
+                          ? `Funded by ${paper.fundingSource}`
+                          : paper.status.charAt(0).toUpperCase() + paper.status.slice(1)}
                       </span>
-                    ))}
+                      <span className="text-xs text-muted font-body ml-auto">{paper.year}</span>
+                    </div>
+
+                    <h3 className="font-heading font-bold text-base mb-2 leading-snug text-foreground group-hover:text-accent transition-colors duration-300">
+                      {paper.title}
+                    </h3>
+
+                    <p className="text-sm text-muted font-body mb-2">
+                      {paper.authors.join(", ")}
+                    </p>
+
+                    <p className="text-sm text-muted/70 font-body italic mb-4">
+                      {paper.journal}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                      {paper.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs px-2 py-0.5 rounded-lg bg-accent/5 text-accent font-mono border border-accent/10 group-hover:bg-accent/10 transition-colors"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               ))}

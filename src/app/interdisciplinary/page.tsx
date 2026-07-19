@@ -216,19 +216,25 @@ export default function InterdisciplinaryPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={isIntersectionVisible ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: i * 0.15 }}
-                    className="glass-card p-6 text-center group"
+                    className="relative overflow-hidden glass-card p-6 text-center group rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:border-accent/40 hover:-translate-y-1.5"
                   >
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mx-auto mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <Icon className="w-7 h-7 text-white" />
+                    {/* Blueprint grid effect in background */}
+                    <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.04] group-hover:opacity-[0.08] transition-opacity duration-300" />
+                    
+                    {/* Glow effect */}
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-accent/5 blur-3xl group-hover:bg-accent/10 transition-all duration-300" />
+
+                    <div className="relative z-10">
+                      <div className="w-14 h-14 rounded-2xl bg-accent/5 border border-accent/15 flex items-center justify-center mx-auto mb-5 group-hover:bg-accent/15 group-hover:border-accent/30 group-hover:scale-110 transition-all duration-300">
+                        <Icon className="w-7 h-7 text-accent" />
+                      </div>
+                      <h3 className="font-heading font-bold text-lg mb-3 text-foreground group-hover:text-accent transition-colors duration-300">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-muted font-body leading-relaxed">
+                        {item.description}
+                      </p>
                     </div>
-                    <h3 className="font-heading font-semibold text-lg mb-3">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-muted font-body leading-relaxed">
-                      {item.description}
-                    </p>
                   </motion.div>
                 );
               })}

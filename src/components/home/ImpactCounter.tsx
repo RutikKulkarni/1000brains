@@ -12,28 +12,24 @@ const stats = [
     value: 100000,
     suffix: "+",
     icon: Users,
-    color: "from-blue-500 to-indigo-600",
   },
   {
     label: "Blog Visits",
     value: 176181,
     suffix: "",
     icon: Eye,
-    color: "from-accent to-orange-500",
   },
   {
     label: "Years Experience",
     value: 25,
     suffix: "+",
     icon: Clock,
-    color: "from-emerald-500 to-teal-600",
   },
   {
     label: "PhD Scholars",
     value: 3,
     suffix: "",
     icon: GraduationCap,
-    color: "from-purple-500 to-violet-600",
   },
 ];
 
@@ -42,7 +38,6 @@ function StatCard({
   value,
   suffix,
   icon: Icon,
-  color,
   index,
   isVisible,
 }: {
@@ -50,7 +45,6 @@ function StatCard({
   value: number;
   suffix: string;
   icon: React.ElementType;
-  color: string;
   index: number;
   isVisible: boolean;
 }) {
@@ -65,18 +59,24 @@ function StatCard({
       initial={{ opacity: 0, y: 30 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.15 }}
-      className="glass-card p-6 md:p-8 text-center group"
+      className="relative overflow-hidden glass-card p-6 md:p-8 text-center group rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:border-accent/40 hover:-translate-y-1.5"
     >
-      <div
-        className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-      >
-        <Icon className="w-6 h-6 text-white" />
+      {/* Blueprint grid effect in background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.04] group-hover:opacity-[0.08] transition-opacity duration-300" />
+      
+      {/* Glow effect */}
+      <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-accent/5 blur-3xl group-hover:bg-accent/10 transition-all duration-300" />
+
+      <div className="relative z-10">
+        <div className="w-12 h-12 rounded-2xl bg-accent/5 border border-accent/15 flex items-center justify-center mx-auto mb-5 group-hover:bg-accent/15 group-hover:border-accent/30 group-hover:scale-110 transition-all duration-300">
+          <Icon className="w-6 h-6 text-accent" />
+        </div>
+        <p className="text-3xl md:text-4xl font-heading font-bold gradient-text mb-2 tracking-tight">
+          {formatNumber(animatedValue)}
+          {suffix}
+        </p>
+        <p className="text-xs md:text-sm text-muted font-body font-medium uppercase tracking-wider">{label}</p>
       </div>
-      <p className="text-3xl md:text-4xl font-heading font-bold gradient-text mb-2">
-        {formatNumber(animatedValue)}
-        {suffix}
-      </p>
-      <p className="text-sm text-muted font-body">{label}</p>
     </motion.div>
   );
 }
