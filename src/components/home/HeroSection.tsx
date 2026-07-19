@@ -101,16 +101,16 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7 }}
           style={{ gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}
-          className="hidden md:grid w-full max-w-5xl px-4 mb-10 mx-auto font-heading font-bold text-6xl lg:text-8xl"
+          className="hidden md:grid w-full max-w-7xl px-4 mb-10 mx-auto font-heading font-bold"
         >
           {/* Left Column: Stacked right-aligned names with continuous right border */}
-          <div className="text-right pr-6 md:pr-10 border-r-2 border-[var(--border)] flex flex-col items-end justify-center leading-[0.95]">
+          <div className="text-right pr-6 md:pr-10 border-r-2 border-[var(--border)] flex flex-col items-end justify-center leading-[0.95] text-5xl lg:text-7xl xl:text-8xl">
             <span className="gradient-text">Sameer</span>
             <span className="text-foreground mt-3 md:mt-4">Sahasrabudhe</span>
           </div>
 
-          {/* Right Column: Vertically centered typing traits with large matching font size */}
-          <div className="text-left pl-6 md:pl-10 flex items-center justify-start leading-[0.95] text-accent font-semibold">
+          {/* Right Column: Vertically centered typing traits with slightly smaller, balanced responsive font size to prevent overflow */}
+          <div className="text-left pl-6 md:pl-10 flex items-center justify-start leading-[0.95] text-accent font-semibold text-4xl lg:text-6xl xl:text-7xl">
             <span className="whitespace-nowrap">
               {typedText}
               <span className="inline-block w-[3px] md:w-[5px] h-[0.8em] ml-2 bg-accent animate-[pulse_1s_infinite] align-middle" />
