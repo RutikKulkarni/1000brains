@@ -31,6 +31,29 @@ export default function Navbar() {
     setIsMobileOpen(false);
   }, [pathname]);
 
+  // Typewriter effect for theme toggle label
+  const targetLabel = theme === "dark" ? "Day" : "Night";
+  const [typedThemeLabel, setTypedThemeLabel] = useState("");
+
+  useEffect(() => {
+    if (!mounted) return;
+    let currentText = "";
+    let i = 0;
+    setTypedThemeLabel("");
+
+    const interval = setInterval(() => {
+      if (i < targetLabel.length) {
+        currentText += targetLabel[i];
+        setTypedThemeLabel(currentText);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [theme, mounted, targetLabel]);
+
   return (
     <>
       <motion.header
@@ -40,7 +63,7 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-[var(--card-bg)] backdrop-blur-xl border-b border-[var(--card-border)] shadow-lg"
+            ? "bg-background/30 backdrop-blur-md border-b border-border/30 shadow-sm"
             : "bg-transparent"
         )}
       >
@@ -90,24 +113,36 @@ export default function Navbar() {
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-[var(--surface-alt)] transition-all duration-200"
+                className="w-10 h-10 lg:w-auto lg:h-9 lg:px-3 lg:py-1.5 rounded-xl flex items-center justify-center gap-1.5 text-foreground/70 hover:text-foreground transition-all duration-200 font-body font-medium text-xs md:text-sm cursor-pointer"
                 aria-label="Toggle theme"
               >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={theme}
-                    initial={{ scale: 0, rotate: -90 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0, rotate: 90 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {theme === "dark" ? (
-                      <Sun className="w-5 h-5" />
-                    ) : (
-                      <Moon className="w-5 h-5" />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
+                {/* Icon changes directly with its own rotation/scale animation */}
+                <div className="relative w-4 h-4 flex items-center justify-center flex-shrink-0">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={theme}
+                      initial={{ scale: 0, rotate: -90 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 90 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      {theme === "dark" ? (
+                        <Sun className="w-4 h-4" />
+                      ) : (
+                        <Moon className="w-4 h-4" />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                {/* Text animates with a typewriter typing effect on desktop */}
+                <span className="hidden lg:inline-block font-mono tracking-wide text-xs">
+                  {typedThemeLabel}
+                  {typedThemeLabel !== targetLabel && (
+                    <span className="inline-block w-[1.5px] h-[0.9em] ml-0.5 bg-accent/60 animate-[pulse_1s_infinite] align-middle" />
+                  )}
+                </span>
               </button>
             )}
 
