@@ -354,27 +354,52 @@ export default function AboutPage() {
 
             {/* Social / Contact Info */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-              {[
-                { icon: Mail, label: "Email", value: "sameer@iitgn.ac.in", href: "mailto:sameer@iitgn.ac.in" },
-                { icon: MapPin, label: "Location", value: "IIT Gandhinagar, Gujarat", href: "#" },
-                { icon: Globe, label: "Blog", value: "1000brains.wordpress.com", href: "#" },
-              ].map(({ icon: Icon, label, value, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="glass-card p-4 flex items-center gap-3 hover:border-accent/30 transition-colors"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted font-body">{label}</p>
-                    <p className="text-sm font-body font-medium truncate">
-                      {value}
-                    </p>
-                  </div>
-                </a>
-              ))}
+              {/* Email Card (shows both) */}
+              <div className="glass-card p-4 flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent flex-shrink-0 mt-0.5">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div className="overflow-hidden w-full">
+                  <p className="text-xs text-muted font-body mb-1">Email</p>
+                  <a href="mailto:sameerss@iitgn.ac.in" className="block text-sm font-body font-medium hover:text-accent transition-colors truncate">
+                    sameerss@iitgn.ac.in
+                  </a>
+                  <a href="mailto:iamsameerss@gmail.com" className="block text-sm font-body font-medium hover:text-accent transition-colors truncate mt-1">
+                    iamsameerss@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Location Card */}
+              <div className="glass-card p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div className="overflow-hidden w-full">
+                  <p className="text-xs text-muted font-body">Location</p>
+                  <p className="text-sm font-body font-medium truncate">
+                    IIT Gandhinagar, Gujarat
+                  </p>
+                </div>
+              </div>
+
+              {/* Blog Card */}
+              <a
+                href="https://ssameers.wordpress.com/?share=twitter&nb=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-card p-4 flex items-center gap-3 hover:border-accent/30 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div className="overflow-hidden w-full">
+                  <p className="text-xs text-muted font-body">Blog</p>
+                  <p className="text-sm font-body font-medium truncate">
+                    ssameers.wordpress.com
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
         </section>

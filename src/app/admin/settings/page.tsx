@@ -8,7 +8,17 @@ interface SiteSettingsForm {
   tagline: string;
   profileImage: string;
   stats: { learners: number; blogVisits: number; yearsExperience: number; phdScholars: number };
-  socialLinks: { linkedin: string; twitter: string; youtube: string; blog: string; email: string };
+  socialLinks: {
+    linkedin: string;
+    twitter: string;
+    youtube: string;
+    blog: string;
+    email: string;
+    gmail: string;
+    facebook: string;
+    instagram: string;
+    scholar: string;
+  };
   cvUrl: string;
 }
 
@@ -18,7 +28,17 @@ export default function AdminSettingsPage() {
     tagline: "",
     profileImage: "",
     stats: { learners: 100000, blogVisits: 176181, yearsExperience: 25, phdScholars: 3 },
-    socialLinks: { linkedin: "", twitter: "", youtube: "", blog: "", email: "" },
+    socialLinks: {
+      linkedin: "",
+      twitter: "",
+      youtube: "",
+      blog: "",
+      email: "",
+      gmail: "",
+      facebook: "",
+      instagram: "",
+      scholar: "",
+    },
     cvUrl: "",
   });
   const [loading, setLoading] = useState(true);
@@ -118,10 +138,10 @@ export default function AdminSettingsPage() {
         {/* Social Links */}
         <div className="glass-card p-6 space-y-4">
           <h3 className="font-heading font-semibold">Social Links</h3>
-          {(["email", "linkedin", "twitter", "youtube", "blog"] as const).map((key) => (
+          {(["email", "gmail", "linkedin", "twitter", "facebook", "instagram", "scholar", "youtube", "blog"] as const).map((key) => (
             <div key={key}>
               <label className="block text-sm font-body font-medium mb-1 capitalize">{key}</label>
-              <input type="text" value={form.socialLinks[key]} onChange={(e) => setForm({ ...form, socialLinks: { ...form.socialLinks, [key]: e.target.value } })} className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all" placeholder={key === "email" ? "sameer@iitgn.ac.in" : "https://..."} />
+              <input type="text" value={form.socialLinks[key]} onChange={(e) => setForm({ ...form, socialLinks: { ...form.socialLinks, [key]: e.target.value } })} className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all" placeholder={key.includes("email") || key === "gmail" ? "sameer@example.com" : "https://..."} />
             </div>
           ))}
         </div>

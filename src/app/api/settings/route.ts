@@ -15,7 +15,16 @@ export async function GET() {
         tagline: "10 traits, 1 digital identity",
         profileImage: "",
         stats: { learners: 100000, blogVisits: 176181, yearsExperience: 25, phdScholars: 3 },
-        socialLinks: { email: "sameer@iitgn.ac.in" },
+        socialLinks: {
+          email: "sameerss@iitgn.ac.in",
+          gmail: "iamsameerss@gmail.com",
+          blog: "https://ssameers.wordpress.com/?share=twitter&nb=1",
+          twitter: "https://x.com/drsameerss",
+          facebook: "https://www.facebook.com/sameerss23",
+          instagram: "https://www.instagram.com/sameerss_insta/",
+          linkedin: "https://www.linkedin.com/in/sssameer/",
+          scholar: "https://scholar.google.com/citations?user=fEZp1N8AAAAJ&hl=en&authuser=1",
+        },
         cvUrl: "",
         phdScholars: [
           { name: "Adithi Iyer", institution: "IIT Gandhinagar" },

@@ -18,19 +18,50 @@ function TwitterIcon({ className }: { className?: string }) {
   );
 }
 
-function YoutubeIcon({ className }: { className?: string }) {
+function FacebookIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1V12h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function GoogleScholarIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
     </svg>
   );
 }
 
 const socialLinks = [
-  { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
-  { icon: TwitterIcon, href: "#", label: "Twitter" },
-  { icon: YoutubeIcon, href: "#", label: "YouTube" },
-  { icon: Mail, href: "mailto:sameer@example.com", label: "Email" },
+  { icon: LinkedinIcon, href: "https://www.linkedin.com/in/sssameer/", label: "LinkedIn" },
+  { icon: TwitterIcon, href: "https://x.com/drsameerss", label: "Twitter" },
+  { icon: FacebookIcon, href: "https://www.facebook.com/sameerss23", label: "Facebook" },
+  { icon: InstagramIcon, href: "https://www.instagram.com/sameerss_insta/", label: "Instagram" },
+  { icon: GoogleScholarIcon, href: "https://scholar.google.com/citations?user=fEZp1N8AAAAJ&hl=en&authuser=1", label: "Google Scholar" },
+  { icon: GlobeIcon, href: "https://ssameers.wordpress.com/?share=twitter&nb=1", label: "Blog" },
 ];
 
 export default function Footer() {
@@ -47,21 +78,33 @@ export default function Footer() {
                   1000<span className="text-accent">brains</span>
                 </span>
               </Link>
-              <p className="text-sm text-muted font-body leading-relaxed mb-6">
+              <p className="text-sm text-muted font-body leading-relaxed mb-5">
                 The digital identity of Prof. Sameer Sahasrabudhe — 10 traits
                 unified into one multidisciplinary creative practice.
               </p>
 
+              {/* Emails */}
+              <div className="mb-5 space-y-2 font-body text-sm text-muted">
+                <a href="mailto:sameerss@iitgn.ac.in" className="flex items-center gap-2.5 hover:text-accent transition-colors">
+                  <Mail className="w-4 h-4 text-accent flex-shrink-0" />
+                  <span className="truncate">sameerss@iitgn.ac.in</span>
+                </a>
+                <a href="mailto:iamsameerss@gmail.com" className="flex items-center gap-2.5 hover:text-accent transition-colors">
+                  <Mail className="w-4 h-4 text-accent flex-shrink-0" />
+                  <span className="truncate">iamsameerss@gmail.com</span>
+                </a>
+              </div>
+
               {/* Social Links */}
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {socialLinks.map(({ icon: Icon, href, label }) => (
                   <a
                     key={label}
                     href={href}
-                    target={href.startsWith("mailto") ? undefined : "_blank"}
+                    target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="w-10 h-10 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] flex items-center justify-center text-muted hover:text-accent hover:border-accent/30 hover:shadow-md transition-all duration-200 hover:scale-105"
+                    className="w-9 h-9 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] flex items-center justify-center text-muted hover:text-accent hover:border-accent/30 hover:shadow-md transition-all duration-200 hover:scale-105"
                   >
                     <Icon className="w-4 h-4" />
                   </a>

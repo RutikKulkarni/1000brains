@@ -18,6 +18,10 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
       youtube: { type: String },
       blog: { type: String },
       email: { type: String, required: true },
+      gmail: { type: String },
+      facebook: { type: String },
+      instagram: { type: String },
+      scholar: { type: String },
     },
     cvUrl: { type: String, default: "" },
     phdScholars: [

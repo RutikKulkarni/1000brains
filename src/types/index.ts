@@ -107,6 +107,10 @@ export interface ISiteSettings {
     youtube?: string;
     blog?: string;
     email: string;
+    gmail?: string;
+    facebook?: string;
+    instagram?: string;
+    scholar?: string;
   };
   cvUrl: string;
   phdScholars: Array<{
