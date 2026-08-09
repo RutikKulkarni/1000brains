@@ -14,6 +14,9 @@ export async function GET() {
         bio: "Professor of Practice in Design at IIT Gandhinagar",
         tagline: "10 traits, 1 digital identity",
         profileImage: "",
+        heroTitle: "Sameer Sahasrabudhe",
+        heroSubtitle: "Professor of Practice, IIT Gandhinagar",
+        logoText: "1000brains",
         stats: { learners: 100000, blogVisits: 176181, yearsExperience: 25, phdScholars: 3 },
         socialLinks: {
           email: "sameerss@iitgn.ac.in",
