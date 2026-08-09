@@ -124,12 +124,19 @@ function AdminSidebar() {
 function AdminGuard({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (status === "unauthenticated" && !isLoginPage) {
       router.push("/admin/login");
     }
-  }, [status, router]);
+  }, [status, router, isLoginPage]);
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   if (status === "loading") {
     return (
