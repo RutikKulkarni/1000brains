@@ -54,18 +54,16 @@ export default function AboutPage() {
   const [refContact, isContactVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
 
   const [scholarsList, setScholarsList] = useState<any[]>(phdScholars);
-  const [bioText, setBioText] = useState("");
+  const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/settings")
       .then((r) => r.json())
       .then((data) => {
         if (data && !data.error) {
+          setSettings(data);
           if (data.phdScholars && data.phdScholars.length > 0) {
             setScholarsList(data.phdScholars);
-          }
-          if (data.bio) {
-            setBioText(data.bio);
           }
         }
       })
@@ -92,6 +90,21 @@ export default function AboutPage() {
       setSubmitting(false);
     }
   };
+
+  const bioText = settings?.bio || "";
+  const heroTitle = settings?.heroTitle || "Prof. Sameer Sahasrabudhe";
+  const heroSubtitle = settings?.heroSubtitle || "Professor of Practice in Design · IIT Gandhinagar";
+  const cvUrl = settings?.cvUrl || "#";
+  const email1 = settings?.socialLinks?.email || "sameerss@iitgn.ac.in";
+  const email2 = settings?.socialLinks?.gmail || "iamsameerss@gmail.com";
+  const blogUrl = settings?.socialLinks?.blog || "https://ssameers.wordpress.com/?share=twitter&nb=1";
+
+  // clean label for blog card
+  let blogLabel = "ssameers.wordpress.com";
+  try {
+    const parsed = new URL(blogUrl);
+    blogLabel = parsed.hostname;
+  } catch (e) {}
 
   return (
     <>
@@ -134,10 +147,10 @@ export default function AboutPage() {
 
                 <div>
                   <h2 className="text-2xl md:text-3xl font-heading font-bold mb-2">
-                    Prof. Sameer Sahasrabudhe
+                    {heroTitle}
                   </h2>
                   <p className="text-accent font-body font-medium mb-4">
-                    Professor of Practice in Design · IIT Gandhinagar
+                    {heroSubtitle}
                   </p>
                   {bioText ? (
                     <p className="text-muted font-body leading-relaxed mb-6">
@@ -172,13 +185,17 @@ export default function AboutPage() {
                       <Mail className="w-4 h-4" />
                       Get in Touch
                     </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] font-body font-medium text-sm hover:border-accent/40 transition-colors"
-                    >
-                      <Download className="w-4 h-4" />
-                      Download CV
-                    </a>
+                    {cvUrl && cvUrl !== "#" && (
+                      <a
+                        href={cvUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] font-body font-medium text-sm hover:border-accent/40 transition-colors"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download CV
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
@@ -382,7 +399,7 @@ export default function AboutPage() {
                       placeholder="Tell us about your inquiry..."
                     />
                   </div>
-                   <button
+                  <button
                     type="submit"
                     disabled={submitting}
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-accent text-white font-body font-medium text-sm hover:bg-accent-dark transition-colors disabled:opacity-50 shadow-lg shadow-accent/20 cursor-pointer"
@@ -412,12 +429,14 @@ export default function AboutPage() {
                 </div>
                 <div className="overflow-hidden w-full">
                   <p className="text-xs text-muted font-body mb-1">Email</p>
-                  <a href="mailto:sameerss@iitgn.ac.in" className="block text-sm font-body font-medium hover:text-accent transition-colors truncate">
-                    sameerss@iitgn.ac.in
+                  <a href={`mailto:${email1}`} className="block text-sm font-body font-medium hover:text-accent transition-colors truncate">
+                    {email1}
                   </a>
-                  <a href="mailto:iamsameerss@gmail.com" className="block text-sm font-body font-medium hover:text-accent transition-colors truncate mt-1">
-                    iamsameerss@gmail.com
-                  </a>
+                  {email2 && (
+                    <a href={`mailto:${email2}`} className="block text-sm font-body font-medium hover:text-accent transition-colors truncate mt-1">
+                      {email2}
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -436,7 +455,7 @@ export default function AboutPage() {
 
               {/* Blog Card */}
               <a
-                href="https://ssameers.wordpress.com/?share=twitter&nb=1"
+                href={blogUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="glass-card p-4 flex items-center gap-3 hover:border-accent/30 transition-colors"
@@ -447,7 +466,7 @@ export default function AboutPage() {
                 <div className="overflow-hidden w-full">
                   <p className="text-xs text-muted font-body">Blog</p>
                   <p className="text-sm font-body font-medium truncate">
-                    ssameers.wordpress.com
+                    {blogLabel}
                   </p>
                 </div>
               </a>
