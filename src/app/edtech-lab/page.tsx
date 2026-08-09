@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -86,6 +86,18 @@ export default function EdtechLabPage() {
   const [activeLCM, setActiveLCM] = useState(0);
   const [refLCM, isLCMVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
   const [refResearch, isResearchVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
+  const [researchList, setResearchList] = useState<any[]>(researchPapers);
+
+  useEffect(() => {
+    fetch("/api/research")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.length > 0) {
+          setResearchList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching research", err));
+  }, []);
 
   return (
     <>
@@ -259,9 +271,9 @@ export default function EdtechLabPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {researchPapers.map((paper, i) => (
+              {researchList.map((paper, i) => (
                 <motion.div
-                  key={paper.id}
+                  key={paper.id || paper._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isResearchVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.1 }}
@@ -304,7 +316,7 @@ export default function EdtechLabPage() {
                     </p>
 
                     <div className="flex flex-wrap gap-1.5 mt-auto">
-                      {paper.tags.map((tag) => (
+                      {paper.tags.map((tag: string) => (
                         <span
                           key={tag}
                           className="text-xs px-2 py-0.5 rounded-lg bg-accent/5 text-accent font-mono border border-accent/10 group-hover:bg-accent/10 transition-colors"

@@ -1,37 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { Users, Eye, Clock, GraduationCap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
-
-const stats = [
-  {
-    label: "Learners Worldwide",
-    value: 100000,
-    suffix: "+",
-    icon: Users,
-  },
-  {
-    label: "Blog Visits",
-    value: 176181,
-    suffix: "",
-    icon: Eye,
-  },
-  {
-    label: "Years Experience",
-    value: 25,
-    suffix: "+",
-    icon: Clock,
-  },
-  {
-    label: "PhD Scholars",
-    value: 3,
-    suffix: "",
-    icon: GraduationCap,
-  },
-];
 
 function StatCard({
   label,
@@ -85,6 +59,51 @@ export default function ImpactCounter() {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.2,
   });
+
+  const [statsData, setStatsData] = useState({
+    learners: 100000,
+    blogVisits: 176181,
+    yearsExperience: 25,
+    phdScholars: 3
+  });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.stats) {
+          setStatsData(data.stats);
+        }
+      })
+      .catch((err) => console.error("Error fetching settings", err));
+  }, []);
+
+  const stats = [
+    {
+      label: "Learners Worldwide",
+      value: statsData.learners,
+      suffix: "+",
+      icon: Users,
+    },
+    {
+      label: "Blog Visits",
+      value: statsData.blogVisits,
+      suffix: "",
+      icon: Eye,
+    },
+    {
+      label: "Years Experience",
+      value: statsData.yearsExperience,
+      suffix: "+",
+      icon: Clock,
+    },
+    {
+      label: "PhD Scholars",
+      value: statsData.phdScholars,
+      suffix: "",
+      icon: GraduationCap,
+    },
+  ];
 
   return (
     <section className="py-24 px-6 bg-[var(--surface-alt)]" ref={ref}>

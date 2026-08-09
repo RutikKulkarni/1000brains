@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -97,6 +97,18 @@ export default function InterdisciplinaryPage() {
   const [refPercussion, isPercussionVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
   const [refIntersection, isIntersectionVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
   const [refTalks, isTalksVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
+  const [talksList, setTalksList] = useState<any[]>(talks);
+
+  useEffect(() => {
+    fetch("/api/talks")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.length > 0) {
+          setTalksList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching talks", err));
+  }, []);
 
   return (
     <>
@@ -259,9 +271,9 @@ export default function InterdisciplinaryPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {talks.map((talk, i) => (
+              {talksList.map((talk, i) => (
                 <motion.div
-                  key={talk.id}
+                  key={talk.id || talk._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isTalksVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.1 }}

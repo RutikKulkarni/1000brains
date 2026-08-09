@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -158,6 +159,52 @@ export default function GlobalClassroomPage() {
     threshold: 0.3,
   });
 
+  const [coursesList, setCoursesList] = useState<any[]>(courses);
+  const [testimonialsList, setTestimonialsList] = useState<any[]>(testimonials);
+  const [blogList, setBlogList] = useState<any[]>(blogPosts);
+
+  useEffect(() => {
+    fetch("/api/courses")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.length > 0) {
+          setCoursesList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching courses", err));
+
+    fetch("/api/testimonials")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.length > 0) {
+          setTestimonialsList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching testimonials", err));
+
+    fetch("/api/blog?per_page=3")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.posts && data.posts.length > 0) {
+          const formatted = data.posts.map((post: any) => ({
+            id: post.id,
+            title: post.title?.rendered || post.title || "No Title",
+            excerpt: post.excerpt?.rendered 
+              ? post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) + "..." 
+              : "Read the full post on our blog.",
+            date: new Date(post.date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }),
+            url: post.link || "https://ssameers.wordpress.com/?share=twitter&nb=1",
+          }));
+          setBlogList(formatted);
+        }
+      })
+      .catch((err) => console.error("Error fetching blog posts", err));
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -214,9 +261,9 @@ export default function GlobalClassroomPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {courses.map((course, i) => (
+              {coursesList.map((course, i) => (
                 <motion.div
-                  key={course.id}
+                  key={course.id || course._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isCoursesVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.1 }}
@@ -276,9 +323,9 @@ export default function GlobalClassroomPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {testimonials.map((testimonial, i) => (
+              {testimonialsList.map((testimonial, i) => (
                 <motion.div
-                  key={testimonial.id}
+                  key={testimonial.id || testimonial._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isTestimonialsVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.1 }}
@@ -335,29 +382,36 @@ export default function GlobalClassroomPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {blogPosts.map((post, i) => (
-                <motion.article
-                  key={post.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isBlogVisible ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: i * 0.1 }}
-                  className="glass-card p-6 group cursor-pointer"
+              {blogList.map((post, i) => (
+                <a
+                  key={post.id || post._id}
+                  href={post.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
                 >
-                  <div className="flex items-center gap-2 mb-3">
-                    <PenTool className="w-4 h-4 text-accent" />
-                    <span className="text-xs text-muted font-body">{post.date}</span>
-                  </div>
-                  <h3 className="font-heading font-semibold mb-2 group-hover:text-accent transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-muted font-body mb-4">
-                    {post.excerpt}
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 text-sm text-accent font-body font-medium">
-                    Read more
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </motion.article>
+                  <motion.article
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isBlogVisible ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: i * 0.1 }}
+                    className="glass-card p-6 group cursor-pointer h-full"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <PenTool className="w-4 h-4 text-accent" />
+                      <span className="text-xs text-muted font-body">{post.date}</span>
+                    </div>
+                    <h3 className="font-heading font-semibold mb-2 group-hover:text-accent transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-muted font-body mb-4">
+                      {post.excerpt}
+                    </p>
+                    <span className="inline-flex items-center gap-1.5 text-sm text-accent font-body font-medium">
+                      Read more
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </motion.article>
+                </a>
               ))}
             </div>
           </div>

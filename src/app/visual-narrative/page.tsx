@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -98,6 +98,34 @@ export default function VisualNarrativePage() {
   const [activeTab, setActiveTab] = useState<TabId>("films");
   const [selectedFilm, setSelectedFilm] = useState<string | null>(null);
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
+  const [filmsList, setFilmsList] = useState<any[]>(films);
+  const [projectsList, setProjectsList] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/films")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.length > 0) {
+          setFilmsList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching films", err));
+
+    fetch("/api/projects")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error && data.length > 0) {
+          setProjectsList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching projects", err));
+  }, []);
+
+  const displayFilms = filmsList;
+  const filtered3D = projectsList.filter((p) => p.category === "3d-visualization");
+  const display3D = filtered3D.length > 0 ? filtered3D : projects3D;
+  const filteredCalligraphy = projectsList.filter((p) => p.category === "calligraphy");
+  const displayCalligraphy = filteredCalligraphy.length > 0 ? filteredCalligraphy : calligraphyWorks;
 
   return (
     <>
@@ -163,9 +191,9 @@ export default function VisualNarrativePage() {
                   transition={{ duration: 0.4 }}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {films.map((film, i) => (
+                    {displayFilms.map((film, i) => (
                       <motion.div
-                        key={film.id}
+                        key={film.id || film._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
@@ -191,7 +219,7 @@ export default function VisualNarrativePage() {
                           </p>
                           {film.awards.length > 0 && (
                             <div className="flex flex-wrap gap-1.5">
-                              {film.awards.map((award) => (
+                              {film.awards.map((award: string) => (
                                 <span
                                   key={award}
                                   className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-body"
@@ -219,9 +247,9 @@ export default function VisualNarrativePage() {
                   transition={{ duration: 0.4 }}
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects3D.map((project, i) => (
+                    {display3D.map((project, i) => (
                       <motion.div
-                        key={project.id}
+                        key={project.id || project._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
@@ -238,7 +266,7 @@ export default function VisualNarrativePage() {
                             {project.description}
                           </p>
                           <div className="flex flex-wrap gap-1.5">
-                            {project.tools.map((tool) => (
+                            {project.tools.map((tool: string) => (
                               <span
                                 key={tool}
                                 className="text-xs px-2.5 py-1 rounded-full bg-primary/8 text-primary font-body"
@@ -264,9 +292,9 @@ export default function VisualNarrativePage() {
                   transition={{ duration: 0.4 }}
                 >
                   <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-                    {calligraphyWorks.map((work, i) => (
+                    {displayCalligraphy.map((work, i) => (
                       <motion.div
-                        key={work.id}
+                        key={work.id || work._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}

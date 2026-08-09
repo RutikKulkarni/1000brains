@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -47,17 +47,50 @@ const phdScholars = [
 export default function AboutPage() {
   const [formState, setFormState] = useState({ name: "", email: "", message: "" });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [refBio, isBioVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
   const [refTimeline, isTimelineVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
   const [refScholars, isScholarsVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
   const [refContact, isContactVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.1 });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [scholarsList, setScholarsList] = useState<any[]>(phdScholars);
+  const [bioText, setBioText] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error) {
+          if (data.phdScholars && data.phdScholars.length > 0) {
+            setScholarsList(data.phdScholars);
+          }
+          if (data.bio) {
+            setBioText(data.bio);
+          }
+        }
+      })
+      .catch((err) => console.error("Error fetching settings", err));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Would POST to /api/contact in production
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 3000);
-    setFormState({ name: "", email: "", message: "" });
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formState),
+      });
+      if (res.ok) {
+        setFormSubmitted(true);
+        setTimeout(() => setFormSubmitted(false), 3500);
+        setFormState({ name: "", email: "", message: "" });
+      }
+    } catch (err) {
+      console.error("Failed to submit contact form", err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -106,22 +139,30 @@ export default function AboutPage() {
                   <p className="text-accent font-body font-medium mb-4">
                     Professor of Practice in Design · IIT Gandhinagar
                   </p>
-                  <p className="text-muted font-body leading-relaxed mb-4">
-                    A multidisciplinary creative professional with over 25 years
-                    of experience spanning design, filmmaking, 3D animation,
-                    educational technology, and research. With a BFA foundation
-                    and ZICA-trained animation expertise, Prof. Sahasrabudhe
-                    bridges the worlds of fine arts and technology to create
-                    impactful educational experiences.
-                  </p>
-                  <p className="text-muted font-body leading-relaxed mb-6">
-                    As a Professor of Practice at IIT Gandhinagar and an edX
-                    Prize 2019 Finalist, he has reached over 100,000 learners
-                    through MOOCs on NPTEL, SWAYAM, IITBombayX, and edX. His
-                    ICSSR-funded research on augmented podcasts and the
-                    Learner-Centric MOOC (LCM) framework are advancing the
-                    frontiers of digital pedagogy.
-                  </p>
+                  {bioText ? (
+                    <p className="text-muted font-body leading-relaxed mb-6">
+                      {bioText}
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-muted font-body leading-relaxed mb-4">
+                        A multidisciplinary creative professional with over 25 years
+                        of experience spanning design, filmmaking, 3D animation,
+                        educational technology, and research. With a BFA foundation
+                        and ZICA-trained animation expertise, Prof. Sahasrabudhe
+                        bridges the worlds of fine arts and technology to create
+                        impactful educational experiences.
+                      </p>
+                      <p className="text-muted font-body leading-relaxed mb-6">
+                        As a Professor of Practice at IIT Gandhinagar and an edX
+                        Prize 2019 Finalist, he has reached over 100,000 learners
+                        through MOOCs on NPTEL, SWAYAM, IITBombayX, and edX. His
+                        ICSSR-funded research on augmented podcasts and the
+                        Learner-Centric MOOC (LCM) framework are advancing the
+                        frontiers of digital pedagogy.
+                      </p>
+                    </>
+                  )}
 
                   <div className="flex flex-wrap gap-3">
                     <a
@@ -223,9 +264,9 @@ export default function AboutPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {phdScholars.map((scholar, i) => (
+              {scholarsList.map((scholar, i) => (
                 <motion.div
-                  key={scholar.name}
+                  key={scholar.name || i}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isScholarsVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.1 }}
@@ -341,12 +382,22 @@ export default function AboutPage() {
                       placeholder="Tell us about your inquiry..."
                     />
                   </div>
-                  <button
+                   <button
                     type="submit"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-accent text-white font-body font-medium text-sm hover:bg-accent-dark transition-colors shadow-lg shadow-accent/20"
+                    disabled={submitting}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-accent text-white font-body font-medium text-sm hover:bg-accent-dark transition-colors disabled:opacity-50 shadow-lg shadow-accent/20 cursor-pointer"
                   >
-                    <Send className="w-4 h-4" />
-                    Send Message
+                    {submitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Send Message
+                      </>
+                    )}
                   </button>
                 </form>
               )}
