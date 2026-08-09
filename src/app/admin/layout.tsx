@@ -31,6 +31,8 @@ const sidebarItems = [
   { label: "Research", href: "/admin/research", icon: FileText },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
   { label: "Talks", href: "/admin/talks", icon: Mic },
+  { label: "Traits", href: "/admin/traits", icon: Brain },
+  { label: "Navigation", href: "/admin/navigation", icon: Menu },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

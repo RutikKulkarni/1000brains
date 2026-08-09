@@ -7,6 +7,9 @@ interface SiteSettingsForm {
   bio: string;
   tagline: string;
   profileImage: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  logoText: string;
   stats: { learners: number; blogVisits: number; yearsExperience: number; phdScholars: number };
   socialLinks: {
     linkedin: string;
@@ -27,6 +30,9 @@ export default function AdminSettingsPage() {
     bio: "",
     tagline: "",
     profileImage: "",
+    heroTitle: "Sameer Sahasrabudhe",
+    heroSubtitle: "Professor of Practice, IIT Gandhinagar",
+    logoText: "1000brains",
     stats: { learners: 100000, blogVisits: 176181, yearsExperience: 25, phdScholars: 3 },
     socialLinks: {
       linkedin: "",
@@ -54,6 +60,9 @@ export default function AdminSettingsPage() {
             bio: data.bio || "",
             tagline: data.tagline || "",
             profileImage: data.profileImage || "",
+            heroTitle: data.heroTitle || "Sameer Sahasrabudhe",
+            heroSubtitle: data.heroSubtitle || "Professor of Practice, IIT Gandhinagar",
+            logoText: data.logoText || "1000brains",
             stats: data.stats || form.stats,
             socialLinks: { ...form.socialLinks, ...data.socialLinks },
             cvUrl: data.cvUrl || "",
@@ -100,25 +109,43 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6 max-w-2xl">
-        {/* Bio */}
+      <form onSubmit={handleSave} className="space-y-6 max-w-2xl font-body">
+        {/* Profile */}
         <div className="glass-card p-6 space-y-4">
-          <h3 className="font-heading font-semibold">Profile</h3>
-          <div>
-            <label className="block text-sm font-body font-medium mb-1">Tagline</label>
-            <input type="text" value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all" placeholder="10 traits, 1 digital identity" />
+          <h3 className="font-heading font-semibold text-lg">General Settings</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-muted">Hero Title</label>
+              <input type="text" value={form.heroTitle} onChange={(e) => setForm({ ...form, heroTitle: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="Sameer Sahasrabudhe" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-muted">Hero Subtitle</label>
+              <input type="text" value={form.heroSubtitle} onChange={(e) => setForm({ ...form, heroSubtitle: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="Professor of Practice" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-muted">Logo Brand Text</label>
+              <input type="text" value={form.logoText} onChange={(e) => setForm({ ...form, logoText: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="1000brains" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-muted">Tagline</label>
+              <input type="text" value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="10 traits, 1 digital identity" />
+            </div>
           </div>
           <div>
-            <label className="block text-sm font-body font-medium mb-1">Bio</label>
-            <textarea rows={4} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all resize-none" placeholder="Your bio..." />
+            <label className="block text-sm font-medium mb-1 text-muted">Bio Summary</label>
+            <textarea rows={4} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 resize-none" placeholder="Your bio..." />
           </div>
-          <div>
-            <label className="block text-sm font-body font-medium mb-1">Profile Image URL</label>
-            <input type="text" value={form.profileImage} onChange={(e) => setForm({ ...form, profileImage: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all" placeholder="https://..." />
-          </div>
-          <div>
-            <label className="block text-sm font-body font-medium mb-1">CV Download URL</label>
-            <input type="text" value={form.cvUrl} onChange={(e) => setForm({ ...form, cvUrl: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all" placeholder="https://..." />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-muted">Profile Image URL</label>
+              <input type="text" value={form.profileImage} onChange={(e) => setForm({ ...form, profileImage: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="https://..." />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-muted">CV Download URL</label>
+              <input type="text" value={form.cvUrl} onChange={(e) => setForm({ ...form, cvUrl: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="https://..." />
+            </div>
           </div>
         </div>
 
