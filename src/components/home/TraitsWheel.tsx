@@ -1,15 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { TRAITS } from "@/types";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { TRAITS, type ITrait } from "@/types";
 import * as LucideIcons from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useRouter } from "next/navigation";
+
+function getStaticTraitUrl(name: string): string {
+  const lowercase = name.toLowerCase();
+  if (["animator", "film-maker", "designer", "calligrapher"].some((k) => lowercase.includes(k))) {
+    return "/visual-narrative";
+  }
+  if (["edtech researcher"].some((k) => lowercase.includes(k))) {
+    return "/edtech-lab";
+  }
+  if (["blogger", "professor"].some((k) => lowercase.includes(k))) {
+    return "/global-classroom";
+  }
+  if (["percussionist", "ideator", "speaker"].some((k) => lowercase.includes(k))) {
+    return "/interdisciplinary";
+  }
+  return "/";
+}
 
 export default function TraitsWheel() {
+  const router = useRouter();
+  const [traitsList, setTraitsList] = useState<ITrait[]>([]);
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
   });
+
+  useEffect(() => {
+    fetch("/api/traits")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (data && data.length > 0) {
+          setTraitsList(data);
+        } else {
+          setTraitsList(
+            TRAITS.map((t) => ({
+              ...t,
+              targetUrl: getStaticTraitUrl(t.name),
+            }))
+          );
+        }
+      })
+      .catch(() =>
+        setTraitsList(
+          TRAITS.map((t) => ({
+            ...t,
+            targetUrl: getStaticTraitUrl(t.name),
+          }))
+        )
+      );
+  }, []);
 
   // Map icon names to Lucide Icon components
   const IconMap: { [key: string]: React.ComponentType<any> } = {
@@ -24,6 +69,8 @@ export default function TraitsWheel() {
     Lightbulb: LucideIcons.Lightbulb,
     Brush: LucideIcons.Brush,
   };
+
+  const activeTraits = traitsList.length > 0 ? traitsList : TRAITS;
 
   return (
     <section className="py-24 px-6 relative overflow-hidden" ref={ref}>
@@ -47,14 +94,16 @@ export default function TraitsWheel() {
 
         {/* Responsive Bento Grid of Traits */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {TRAITS.map((trait, i) => {
+          {activeTraits.map((trait, i) => {
             const IconComponent = IconMap[trait.icon] || LucideIcons.HelpCircle;
+            const indexDisplay = String((trait.id !== undefined && trait.id !== null) ? trait.id : i + 1).padStart(2, "0");
             return (
               <motion.div
-                key={trait.id}
+                key={(trait as any)._id || trait.id || i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
+                onClick={() => router.push(trait.targetUrl || "/")}
                 className="relative overflow-hidden glass-card p-6 flex flex-col justify-between h-[210px] rounded-2xl cursor-pointer group transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:border-accent/40 hover:-translate-y-1.5"
               >
                 {/* Blueprint grid effect in background */}
@@ -66,7 +115,7 @@ export default function TraitsWheel() {
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-xs text-muted/50 font-semibold tracking-wider">
-                      {String(trait.id).padStart(2, "0")}
+                      {indexDisplay}
                     </span>
                     <div className="w-9 h-9 rounded-xl bg-accent/5 border border-accent/10 flex items-center justify-center text-accent group-hover:bg-accent/15 group-hover:border-accent/25 group-hover:scale-110 transition-all duration-300">
                       <IconComponent className="w-4.5 h-4.5" />

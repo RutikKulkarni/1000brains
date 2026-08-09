@@ -95,6 +95,9 @@ export interface ISiteSettings {
   bio: string;
   tagline: string;
   profileImage: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  logoText?: string;
   stats: {
     learners: number;
     blogVisits: number;
@@ -120,13 +123,25 @@ export interface ISiteSettings {
   }>;
 }
 
-// ---------- The 10 Traits ----------
+// ---------- Dynamic CMS Models ----------
 export interface ITrait {
-  id: number;
+  _id?: string;
+  id?: number; // legacy fallback
   name: string;
   description: string;
   icon: string; // Lucide icon name
+  targetUrl?: string;
+  order?: number;
 }
+
+export interface INavigationItem {
+  _id?: string;
+  label: string;
+  href: string;
+  order: number;
+  active: boolean;
+}
+
 
 export const TRAITS: ITrait[] = [
   { id: 1, name: "Designer", description: "Visual/spatial design, BFA background", icon: "Palette" },

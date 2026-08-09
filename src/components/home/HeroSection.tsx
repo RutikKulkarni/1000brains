@@ -5,16 +5,50 @@ import { motion } from "framer-motion";
 import { TRAITS } from "@/types";
 import { ArrowDown } from "lucide-react";
 
+interface DBTrait {
+  name: string;
+}
+
+interface DBSettings {
+  heroTitle?: string;
+  heroSubtitle?: string;
+}
+
 export default function HeroSection() {
   const [typedText, setTypedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
+  const [traitsList, setTraitsList] = useState<DBTrait[]>([]);
+  const [settings, setSettings] = useState<DBSettings | null>(null);
 
-  const activeTraitIndex = loopNum % TRAITS.length;
+  // Fetch dynamic traits & settings
+  useEffect(() => {
+    fetch("/api/traits")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (data && data.length > 0) {
+          setTraitsList(data);
+        } else {
+          setTraitsList(TRAITS);
+        }
+      })
+      .catch(() => setTraitsList(TRAITS));
+
+    fetch("/api/settings")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && !data.error) setSettings(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  const activeTraits = traitsList.length > 0 ? traitsList : TRAITS;
+  const activeTraitIndex = loopNum % activeTraits.length;
 
   useEffect(() => {
-    const fullText = TRAITS[activeTraitIndex].name;
+    if (activeTraits.length === 0) return;
+    const fullText = activeTraits[activeTraitIndex]?.name || "";
 
     const handleType = () => {
       setTypedText(
@@ -37,7 +71,12 @@ export default function HeroSection() {
       isDeleting ? 50 : typingSpeed
     );
     return () => clearTimeout(timer);
-  }, [typedText, isDeleting, activeTraitIndex, typingSpeed]);
+  }, [typedText, isDeleting, activeTraitIndex, typingSpeed, activeTraits]);
+
+  // Parse first and last names for layout display
+  const titleParts = (settings?.heroTitle || "Sameer Sahasrabudhe").split(" ");
+  const firstName = titleParts[0] || "Sameer";
+  const lastName = titleParts.slice(1).join(" ") || "Sahasrabudhe";
 
   return (
     <section className="relative flex flex-col items-center justify-center min-h-screen px-6 text-center overflow-hidden">
@@ -77,14 +116,14 @@ export default function HeroSection() {
           transition={{ delay: 0.2 }}
           className="text-muted text-xs sm:text-sm tracking-[0.3em] uppercase mb-8 font-body"
         >
-          Professor of Practice in Design · IIT Gandhinagar
+          {settings?.heroSubtitle || "Professor of Practice in Design · IIT Gandhinagar"}
         </motion.p>
 
         {/* Mobile Layout (centered stacked, hidden on desktop/tablet) */}
         <div className="flex md:hidden flex-col items-center text-center px-4 mb-10 mx-auto font-heading font-bold">
           <div className="text-3xl sm:text-5xl leading-[0.95] text-foreground">
-            <div className="gradient-text">Sameer</div>
-            <div className="mt-2">Sahasrabudhe</div>
+            <div className="gradient-text">{firstName}</div>
+            <div className="mt-2">{lastName}</div>
           </div>
           <div className="w-[2px] h-8 bg-muted/20 my-4" />
           <div className="text-2xl sm:text-4xl text-accent font-semibold leading-[0.95] min-h-[1.2em] flex items-center justify-center">
@@ -105,8 +144,8 @@ export default function HeroSection() {
         >
           {/* Left Column: Stacked right-aligned names with continuous right border */}
           <div className="text-right pr-6 md:pr-10 border-r-2 border-[var(--border)] flex flex-col items-end justify-center leading-[0.95] text-5xl lg:text-7xl xl:text-8xl">
-            <span className="gradient-text">Sameer</span>
-            <span className="text-foreground mt-3 md:mt-4">Sahasrabudhe</span>
+            <span className="gradient-text">{firstName}</span>
+            <span className="text-foreground mt-3 md:mt-4">{lastName}</span>
           </div>
 
           {/* Right Column: Vertically centered typing traits with slightly smaller, balanced responsive font size to prevent overflow */}

@@ -6,8 +6,12 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, Brain } from "lucide-react";
-import { NAV_ITEMS } from "@/types";
+import { NAV_ITEMS, type INavigationItem } from "@/types";
 import { cn } from "@/lib/utils";
+
+interface DBSettings {
+  logoText?: string;
+}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -15,6 +19,8 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [navigationList, setNavigationList] = useState<INavigationItem[]>([]);
+  const [settings, setSettings] = useState<DBSettings | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -24,6 +30,29 @@ export default function Navbar() {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fetch navigation & settings
+  useEffect(() => {
+    fetch("/api/navigation")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (data && data.length > 0) {
+          setNavigationList(data.filter((item: INavigationItem) => item.active !== false));
+        } else {
+          setNavigationList(NAV_ITEMS.map((n, i) => ({ label: n.label, href: n.href, order: i, active: true })));
+        }
+      })
+      .catch(() =>
+        setNavigationList(NAV_ITEMS.map((n, i) => ({ label: n.label, href: n.href, order: i, active: true })))
+      );
+
+    fetch("/api/settings")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && !data.error) setSettings(data);
+      })
+      .catch(console.error);
   }, []);
 
   // Close mobile menu on route change
@@ -54,6 +83,21 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, [theme, mounted, targetLabel]);
 
+  // Calculate dynamic logo prefix and suffix for highlighting
+  const logoText = settings?.logoText || "1000brains";
+  const spaceIdx = logoText.indexOf(" ");
+  let prefix = logoText;
+  let suffix = "";
+  if (spaceIdx !== -1) {
+    prefix = logoText.substring(0, spaceIdx);
+    suffix = logoText.substring(spaceIdx + 1);
+  } else if (logoText.toLowerCase().startsWith("1000")) {
+    prefix = "1000";
+    suffix = logoText.substring(4);
+  }
+
+  const activeNavList = navigationList.length > 0 ? navigationList : NAV_ITEMS;
+
   return (
     <>
       <motion.header
@@ -75,13 +119,14 @@ export default function Navbar() {
           >
             <Brain className="w-7 h-7 text-accent group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
             <span className="font-heading font-bold text-lg text-foreground hidden sm:block">
-              1000<span className="text-accent">brains</span>
+              {prefix}
+              {suffix && <span className="text-accent">{suffix}</span>}
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
-            {NAV_ITEMS.map((item) => {
+            {activeNavList.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -182,7 +227,8 @@ export default function Navbar() {
             >
               <div className="flex items-center justify-between p-6 border-b border-[var(--border)]">
                 <span className="font-heading font-bold text-lg">
-                  1000<span className="text-accent">brains</span>
+                  {prefix}
+                  {suffix && <span className="text-accent">{suffix}</span>}
                 </span>
                 <button
                   onClick={() => setIsMobileOpen(false)}
@@ -192,7 +238,7 @@ export default function Navbar() {
                 </button>
               </div>
               <nav className="p-4 flex flex-col gap-1">
-                {NAV_ITEMS.map((item, i) => {
+                {activeNavList.map((item, i) => {
                   const isActive = pathname === item.href;
                   return (
                     <motion.div

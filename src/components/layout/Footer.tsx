@@ -1,6 +1,9 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Brain, Mail, Heart } from "lucide-react";
-import { NAV_ITEMS, PORTFOLIO_HEADS } from "@/types";
+import { NAV_ITEMS, PORTFOLIO_HEADS, type INavigationItem } from "@/types";
 
 function LinkedinIcon({ className }: { className?: string }) {
   return (
@@ -39,7 +42,7 @@ function InstagramIcon({ className }: { className?: string }) {
 function GoogleScholarIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M22 10v6M2 10l10-5 10 5-10 5-10 5z" />
       <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
     </svg>
   );
@@ -55,16 +58,70 @@ function GlobeIcon({ className }: { className?: string }) {
   );
 }
 
-const socialLinks = [
-  { icon: LinkedinIcon, href: "https://www.linkedin.com/in/sssameer/", label: "LinkedIn" },
-  { icon: TwitterIcon, href: "https://x.com/drsameerss", label: "Twitter" },
-  { icon: FacebookIcon, href: "https://www.facebook.com/sameerss23", label: "Facebook" },
-  { icon: InstagramIcon, href: "https://www.instagram.com/sameerss_insta/", label: "Instagram" },
-  { icon: GoogleScholarIcon, href: "https://scholar.google.com/citations?user=fEZp1N8AAAAJ&hl=en&authuser=1", label: "Google Scholar" },
-  { icon: GlobeIcon, href: "https://ssameers.wordpress.com/?share=twitter&nb=1", label: "Blog" },
-];
+interface DBSettings {
+  logoText?: string;
+  tagline?: string;
+  socialLinks?: {
+    linkedin?: string;
+    twitter?: string;
+    facebook?: string;
+    instagram?: string;
+    scholar?: string;
+    blog?: string;
+    email: string;
+    gmail?: string;
+  };
+}
 
 export default function Footer() {
+  const [navigationList, setNavigationList] = useState<INavigationItem[]>([]);
+  const [settings, setSettings] = useState<DBSettings | null>(null);
+
+  useEffect(() => {
+    fetch("/api/navigation")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (data && data.length > 0) {
+          setNavigationList(data.filter((item: INavigationItem) => item.active !== false));
+        } else {
+          setNavigationList(NAV_ITEMS.map((n, i) => ({ label: n.label, href: n.href, order: i, active: true })));
+        }
+      })
+      .catch(() =>
+        setNavigationList(NAV_ITEMS.map((n, i) => ({ label: n.label, href: n.href, order: i, active: true })))
+      );
+
+    fetch("/api/settings")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && !data.error) setSettings(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  const logoText = settings?.logoText || "1000brains";
+  const spaceIdx = logoText.indexOf(" ");
+  let prefix = logoText;
+  let suffix = "";
+  if (spaceIdx !== -1) {
+    prefix = logoText.substring(0, spaceIdx);
+    suffix = logoText.substring(spaceIdx + 1);
+  } else if (logoText.toLowerCase().startsWith("1000")) {
+    prefix = "1000";
+    suffix = logoText.substring(4);
+  }
+
+  const socialLinks = [
+    { icon: LinkedinIcon, href: settings?.socialLinks?.linkedin || "https://www.linkedin.com/in/sssameer/", label: "LinkedIn" },
+    { icon: TwitterIcon, href: settings?.socialLinks?.twitter || "https://x.com/drsameerss", label: "Twitter" },
+    { icon: FacebookIcon, href: settings?.socialLinks?.facebook || "https://www.facebook.com/sameerss23", label: "Facebook" },
+    { icon: InstagramIcon, href: settings?.socialLinks?.instagram || "https://www.instagram.com/sameerss_insta/", label: "Instagram" },
+    { icon: GoogleScholarIcon, href: settings?.socialLinks?.scholar || "https://scholar.google.com/citations?user=fEZp1N8AAAAJ&hl=en&authuser=1", label: "Google Scholar" },
+    { icon: GlobeIcon, href: settings?.socialLinks?.blog || "https://ssameers.wordpress.com/?share=twitter&nb=1", label: "Blog" },
+  ];
+
+  const activeNavList = navigationList.length > 0 ? navigationList : NAV_ITEMS;
+
   return (
     <div className="pt-8">
       <footer>
@@ -75,23 +132,23 @@ export default function Footer() {
               <Link href="/" className="flex items-center gap-2 mb-4 group">
                 <Brain className="w-7 h-7 text-accent group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
                 <span className="font-heading font-bold text-lg text-foreground">
-                  1000<span className="text-accent">brains</span>
+                  {prefix}
+                  {suffix && <span className="text-accent">{suffix}</span>}
                 </span>
               </Link>
               <p className="text-sm text-muted font-body leading-relaxed mb-5">
-                The digital identity of Prof. Sameer Sahasrabudhe — 10 traits
-                unified into one multidisciplinary creative practice.
+                The digital identity of Prof. Sameer Sahasrabudhe — {settings?.tagline || "10 traits, 1 digital identity"}.
               </p>
 
               {/* Emails */}
               <div className="mb-5 space-y-2 font-body text-sm text-muted">
-                <a href="mailto:sameerss@iitgn.ac.in" className="flex items-center gap-2.5 hover:text-accent transition-colors">
+                <a href={`mailto:${settings?.socialLinks?.email || "sameerss@iitgn.ac.in"}`} className="flex items-center gap-2.5 hover:text-accent transition-colors">
                   <Mail className="w-4 h-4 text-accent flex-shrink-0" />
-                  <span className="truncate">sameerss@iitgn.ac.in</span>
+                  <span className="truncate">{settings?.socialLinks?.email || "sameerss@iitgn.ac.in"}</span>
                 </a>
-                <a href="mailto:iamsameerss@gmail.com" className="flex items-center gap-2.5 hover:text-accent transition-colors">
+                <a href={`mailto:${settings?.socialLinks?.gmail || "iamsameerss@gmail.com"}`} className="flex items-center gap-2.5 hover:text-accent transition-colors">
                   <Mail className="w-4 h-4 text-accent flex-shrink-0" />
-                  <span className="truncate">iamsameerss@gmail.com</span>
+                  <span className="truncate">{settings?.socialLinks?.gmail || "iamsameerss@gmail.com"}</span>
                 </a>
               </div>
 
@@ -138,7 +195,7 @@ export default function Footer() {
                 Quick Links
               </h4>
               <ul className="space-y-3">
-                {NAV_ITEMS.filter((n) => n.href !== "/").map((item) => (
+                {activeNavList.filter((n) => n.href !== "/").map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
@@ -159,10 +216,10 @@ export default function Footer() {
               </h4>
               <ul className="space-y-3">
                 {[
-                  { name: "IIT Gandhinagar", href: "#" },
-                  { name: "NPTEL / SWAYAM", href: "#" },
+                  { name: "IIT Gandhinagar", href: "https://iitgn.ac.in" },
+                  { name: "NPTEL / SWAYAM", href: "https://nptel.ac.in" },
                   { name: "EdTech Society", href: "#" },
-                  { name: "1000 Brains Blog", href: "#" },
+                  { name: "1000 Brains Blog", href: settings?.socialLinks?.blog || "#" },
                 ].map((item) => (
                   <li key={item.name}>
                     <a
@@ -184,7 +241,7 @@ export default function Footer() {
           <div className="mt-10 pt-3 pb-3 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-muted font-body">
               &copy; {new Date().getFullYear()} Prof. Sameer Sahasrabudhe
-              &middot; 1000brains. All rights reserved.
+              &middot; {logoText}. All rights reserved.
             </p>
             <p className="text-xs text-muted font-body flex items-center gap-1.5 shrink-0">
               Crafted with <Heart className="w-3 h-3 text-accent fill-accent" />{" "}

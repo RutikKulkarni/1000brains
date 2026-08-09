@@ -6,6 +6,9 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     bio: { type: String, required: true },
     tagline: { type: String, required: true },
     profileImage: { type: String, default: "" },
+    heroTitle: { type: String, default: "Sameer Sahasrabudhe" },
+    heroSubtitle: { type: String, default: "Professor of Practice, IIT Gandhinagar" },
+    logoText: { type: String, default: "1000brains" },
     stats: {
       learners: { type: Number, default: 100000 },
       blogVisits: { type: Number, default: 176181 },
