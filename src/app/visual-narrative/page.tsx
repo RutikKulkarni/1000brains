@@ -17,7 +17,14 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-
+function getYouTubeEmbedUrl(url?: string): string | null {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11
+    ? `https://www.youtube.com/embed/${match[2]}`
+    : null;
+}
 // Static demo data — will be replaced by MongoDB data
 const films = [
   {
@@ -198,7 +205,7 @@ export default function VisualNarrativePage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                         className="glass-card overflow-hidden group cursor-pointer"
-                        onClick={() => setSelectedFilm(film.id)}
+                        onClick={() => setSelectedFilm(film.id || film._id)}
                       >
                         {/* Thumbnail placeholder */}
                         <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
@@ -332,6 +339,105 @@ export default function VisualNarrativePage() {
             </AnimatePresence>
           </div>
         </div>
+
+        {/* Film Detail Modal */}
+        <AnimatePresence>
+          {selectedFilm && (() => {
+            const filmItem = filmsList.find(f => (f.id || f._id) === selectedFilm) || films.find(f => f.id === selectedFilm);
+            if (!filmItem) return null;
+            const embedUrl = getYouTubeEmbedUrl(filmItem.videoUrl);
+
+            return (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
+                onClick={() => setSelectedFilm(null)}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="glass-card w-full max-w-3xl relative overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl p-0"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Close button */}
+                  <button
+                    onClick={() => setSelectedFilm(null)}
+                    className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors flex items-center justify-center cursor-pointer shadow-lg"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+
+                  {/* Video Player or Thumbnail */}
+                  <div className="relative aspect-video w-full bg-black">
+                    {embedUrl ? (
+                      <iframe
+                        src={embedUrl}
+                        title={filmItem.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex flex-col items-center justify-center text-center p-6">
+                        <Film className="w-16 h-16 text-accent/30 mb-3" />
+                        <span className="text-sm text-muted font-body">No video preview available</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Film Details */}
+                  <div className="p-6 md:p-8 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div>
+                        <h2 className="text-2xl font-heading font-bold text-foreground leading-tight">
+                          {filmItem.title}
+                        </h2>
+                        <p className="text-sm text-muted font-body mt-1">
+                          {filmItem.subtitle}
+                        </p>
+                      </div>
+                      <span className="px-3.5 py-1.5 rounded-xl bg-accent/10 text-accent font-mono text-xs font-semibold border border-accent/20">
+                        Released in {filmItem.year}
+                      </span>
+                    </div>
+
+                    {/* Description */}
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <p
+                        className="text-sm text-muted font-body leading-relaxed whitespace-pre-line"
+                        dangerouslySetInnerHTML={{ __html: filmItem.description }}
+                      />
+                    </div>
+
+                    {/* Awards list */}
+                    {filmItem.awards && filmItem.awards.length > 0 && (
+                      <div className="pt-4 border-t border-[var(--border)]">
+                        <h4 className="text-xs font-semibold text-muted uppercase tracking-wider mb-2 font-mono">
+                          Awards & Recognition
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {filmItem.awards.map((award: string) => (
+                            <span
+                              key={award}
+                              className="inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-body font-medium border border-amber-500/20 shadow-sm"
+                            >
+                              <Award className="w-3.5 h-3.5" />
+                              {award}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </motion.div>
+            );
+          })()}
+        </AnimatePresence>
       </main>
       <Footer />
     </>

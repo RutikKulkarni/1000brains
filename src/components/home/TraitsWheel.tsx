@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { TRAITS, type ITrait } from "@/types";
 import * as LucideIcons from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
@@ -30,6 +30,7 @@ function getStaticTraitUrl(name: string): string {
 export default function TraitsWheel() {
   const router = useRouter();
   const [traitsList, setTraitsList] = useState<ITrait[]>([]);
+  const [selectedTrait, setSelectedTrait] = useState<ITrait | null>(null);
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
   });
@@ -106,7 +107,7 @@ export default function TraitsWheel() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                onClick={() => router.push(trait.targetUrl || "/")}
+                onClick={() => setSelectedTrait(trait)}
                 className="relative overflow-hidden glass-card p-6 flex flex-col justify-between h-[210px] rounded-2xl cursor-pointer group transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:border-accent/40 hover:-translate-y-1.5"
               >
                 {/* Blueprint grid effect in background */}
@@ -138,6 +139,89 @@ export default function TraitsWheel() {
           })}
         </div>
       </div>
+
+      {/* Trait Detail Modal */}
+      <AnimatePresence>
+        {selectedTrait && (() => {
+          const IconComponent = IconMap[selectedTrait.icon] || LucideIcons.HelpCircle;
+          
+          const getTargetPageTitle = (url?: string): string => {
+            if (!url) return "Home";
+            if (url === "/visual-narrative") return "Visual Narrative & Design";
+            if (url === "/edtech-lab") return "EdTech & Pedagogy Lab";
+            if (url === "/global-classroom") return "The Global Classroom";
+            if (url === "/interdisciplinary") return "Interdisciplinary Expression";
+            if (url === "/about") return "About & Connect";
+            return "Explore Section";
+          };
+
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
+              onClick={() => setSelectedTrait(null)}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ duration: 0.3 }}
+                className="glass-card w-full max-w-lg relative overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl p-6 md:p-8"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedTrait(null)}
+                  className="absolute top-4 right-4 text-muted hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <LucideIcons.X className="w-5 h-5" />
+                </button>
+
+                {/* Header Icon Section */}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                    <IconComponent className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-heading font-bold text-foreground">
+                      {selectedTrait.name}
+                    </h2>
+                    <span className="text-[10px] text-muted font-mono uppercase tracking-wider">
+                      Dynamic CMS Trait Profile
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content description */}
+                <div className="space-y-4">
+                  <p 
+                    className="text-sm md:text-base text-muted font-body leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: selectedTrait.description }}
+                  />
+                </div>
+
+                {/* Call-to-action button */}
+                {selectedTrait.targetUrl && (
+                  <div className="mt-8 pt-6 border-t border-[var(--border)]">
+                    <button
+                      onClick={() => {
+                        setSelectedTrait(null);
+                        router.push(selectedTrait.targetUrl!);
+                      }}
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-accent text-white font-body text-sm font-semibold hover:bg-accent-dark transition-colors shadow-lg shadow-accent/20 cursor-pointer"
+                    >
+                      Explore {getTargetPageTitle(selectedTrait.targetUrl)}
+                      <LucideIcons.ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
     </section>
   );
 }
