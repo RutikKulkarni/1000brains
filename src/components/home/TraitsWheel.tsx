@@ -15,8 +15,11 @@ function getStaticTraitUrl(name: string): string {
   if (["edtech researcher"].some((k) => lowercase.includes(k))) {
     return "/edtech-lab";
   }
-  if (["blogger", "professor"].some((k) => lowercase.includes(k))) {
+  if (["blogger"].some((k) => lowercase.includes(k))) {
     return "/global-classroom";
+  }
+  if (["professor"].some((k) => lowercase.includes(k))) {
+    return "/about";
   }
   if (["percussionist", "ideator", "speaker"].some((k) => lowercase.includes(k))) {
     return "/interdisciplinary";

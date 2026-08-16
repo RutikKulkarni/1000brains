@@ -293,9 +293,10 @@ export default function InterdisciplinaryPage() {
                     {talk.title}
                   </h3>
 
-                  <p className="text-sm text-muted font-body leading-relaxed mb-4">
-                    {talk.description}
-                  </p>
+                  <p
+                    className="text-sm text-muted font-body leading-relaxed mb-4"
+                    dangerouslySetInnerHTML={{ __html: talk.description }}
+                  />
 
                   <div className="flex flex-wrap gap-4 text-xs text-muted font-body">
                     <span className="flex items-center gap-1.5">

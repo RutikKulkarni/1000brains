@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Plus, Edit2, Trash2, Mic, Search, Calendar, MapPin, X } from "lucide-react";
+import RichTextArea from "@/components/admin/RichTextArea";
 
 interface TalkItem {
   _id: string;
@@ -10,6 +11,7 @@ interface TalkItem {
   event: string;
   venue: string;
   date: string;
+  description: string;
   featured: boolean;
 }
 
@@ -32,6 +34,7 @@ export default function AdminTalksPage() {
     event: "",
     venue: "",
     date: "",
+    description: "",
     featured: false,
   });
 
@@ -55,6 +58,7 @@ export default function AdminTalksPage() {
       event: "",
       venue: "",
       date: "",
+      description: "",
       featured: false,
     });
     setModalOpen(true);
@@ -68,6 +72,7 @@ export default function AdminTalksPage() {
       event: item.event,
       venue: item.venue,
       date: item.date,
+      description: item.description || "",
       featured: item.featured,
     });
     setModalOpen(true);
@@ -218,7 +223,7 @@ export default function AdminTalksPage() {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="glass-card w-full max-w-md p-6 relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl">
+          <div className="glass-card w-full max-w-3xl p-6 relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl">
             <button
               onClick={() => setModalOpen(false)}
               className="absolute top-4 right-4 text-muted hover:text-foreground transition-colors cursor-pointer"
@@ -314,6 +319,15 @@ export default function AdminTalksPage() {
                   />
                 </div>
               </div>
+              <RichTextArea
+                id="talk-desc"
+                label="Description"
+                value={formData.description}
+                onChange={(val) => setFormData({ ...formData, description: val })}
+                placeholder="Enter talk summary..."
+                required
+                rows={8}
+              />
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"

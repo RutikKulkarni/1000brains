@@ -289,9 +289,10 @@ export default function GlobalClassroomPage() {
                     {course.title}
                   </h3>
 
-                  <p className="text-sm text-muted font-body leading-relaxed mb-4 flex-1">
-                    {course.description}
-                  </p>
+                  <p
+                    className="text-sm text-muted font-body leading-relaxed mb-4 flex-1"
+                    dangerouslySetInnerHTML={{ __html: course.description }}
+                  />
 
                   <a
                     href={course.url}
@@ -333,9 +334,10 @@ export default function GlobalClassroomPage() {
                 >
                   <Quote className="w-8 h-8 text-accent/20 mb-3" />
 
-                  <p className="text-foreground font-body leading-relaxed mb-4 italic">
-                    &ldquo;{testimonial.content}&rdquo;
-                  </p>
+                  <p
+                    className="text-foreground font-body leading-relaxed mb-4 italic"
+                    dangerouslySetInnerHTML={{ __html: `&ldquo;${testimonial.content}&rdquo;` }}
+                  />
 
                   <div className="flex items-center justify-between">
                     <div>

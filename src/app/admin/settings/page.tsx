@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Settings, Save, CheckCircle } from "lucide-react";
+import RichTextArea from "@/components/admin/RichTextArea";
 
 interface SiteSettingsForm {
   bio: string;
@@ -133,10 +134,14 @@ export default function AdminSettingsPage() {
               <input type="text" value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40" placeholder="10 traits, 1 digital identity" />
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1 text-muted">Bio Summary</label>
-            <textarea rows={4} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} className="w-full px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 resize-none" placeholder="Your bio..." />
-          </div>
+           <RichTextArea
+             id="bio"
+             label="Bio Summary"
+             value={form.bio}
+             onChange={(val) => setForm({ ...form, bio: val })}
+             placeholder="Your bio..."
+             rows={10}
+           />
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-muted">Profile Image URL</label>

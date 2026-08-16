@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Plus, Edit2, Trash2, BookOpen, Search, Users, X } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
+import RichTextArea from "@/components/admin/RichTextArea";
 
 interface CourseItem {
   _id: string;
@@ -204,7 +205,7 @@ export default function AdminCoursesPage() {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="glass-card w-full max-w-md p-6 relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl">
+          <div className="glass-card w-full max-w-3xl p-6 relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl">
             <button
               onClick={() => setModalOpen(false)}
               className="absolute top-4 right-4 text-muted hover:text-foreground transition-colors cursor-pointer"
@@ -294,20 +295,15 @@ export default function AdminCoursesPage() {
                   Featured
                 </label>
               </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1 text-muted">
-                  Description
-                </label>
-                <textarea
-                  required
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  className="w-full px-3 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 resize-none"
-                />
-              </div>
+               <RichTextArea
+                 id="course-desc"
+                 label="Description"
+                 value={formData.description}
+                 onChange={(val) => setFormData({ ...formData, description: val })}
+                 placeholder="Enter course description..."
+                 required
+                 rows={8}
+               />
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"

@@ -217,6 +217,12 @@ export default function VisualNarrativePage() {
                           <p className="text-sm text-muted font-body mb-3">
                             {film.subtitle}
                           </p>
+                          {film.description && (
+                            <p
+                              className="text-xs text-muted/80 font-body leading-relaxed mb-4 line-clamp-3"
+                              dangerouslySetInnerHTML={{ __html: film.description }}
+                            />
+                          )}
                           {film.awards.length > 0 && (
                             <div className="flex flex-wrap gap-1.5">
                               {film.awards.map((award: string) => (
@@ -262,9 +268,10 @@ export default function VisualNarrativePage() {
                           <h3 className="font-heading font-semibold mb-2">
                             {project.title}
                           </h3>
-                          <p className="text-sm text-muted font-body mb-3">
-                            {project.description}
-                          </p>
+                          <p
+                            className="text-sm text-muted font-body mb-3"
+                            dangerouslySetInnerHTML={{ __html: project.description }}
+                          />
                           <div className="flex flex-wrap gap-1.5">
                             {project.tools.map((tool: string) => (
                               <span
@@ -312,9 +319,10 @@ export default function VisualNarrativePage() {
                           <h3 className="font-heading font-semibold mb-1">
                             {work.title}
                           </h3>
-                          <p className="text-sm text-muted font-body">
-                            {work.description}
-                          </p>
+                          <p
+                            className="text-sm text-muted font-body"
+                            dangerouslySetInnerHTML={{ __html: work.description }}
+                          />
                         </div>
                       </motion.div>
                     ))}

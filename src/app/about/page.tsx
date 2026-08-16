@@ -153,9 +153,10 @@ export default function AboutPage() {
                     {heroSubtitle}
                   </p>
                   {bioText ? (
-                    <p className="text-muted font-body leading-relaxed mb-6">
-                      {bioText}
-                    </p>
+                    <p
+                      className="text-muted font-body leading-relaxed mb-6"
+                      dangerouslySetInnerHTML={{ __html: bioText }}
+                    />
                   ) : (
                     <>
                       <p className="text-muted font-body leading-relaxed mb-4">

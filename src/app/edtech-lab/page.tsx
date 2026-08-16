@@ -311,9 +311,15 @@ export default function EdtechLabPage() {
                       {paper.authors.join(", ")}
                     </p>
 
-                    <p className="text-sm text-muted/70 font-body italic mb-4">
+                    <p className="text-sm text-muted/70 font-body italic mb-3">
                       {paper.journal}
                     </p>
+                    {paper.abstract && (
+                      <p
+                        className="text-xs text-muted/80 font-body leading-relaxed mb-4 line-clamp-3"
+                        dangerouslySetInnerHTML={{ __html: paper.abstract }}
+                      />
+                    )}
 
                     <div className="flex flex-wrap gap-1.5 mt-auto">
                       {paper.tags.map((tag: string) => (

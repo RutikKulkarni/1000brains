@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Plus, Edit2, Trash2, Film as FilmIcon, Award, Search, X } from "lucide-react";
+import RichTextArea from "@/components/admin/RichTextArea";
 
 interface FilmItem {
   _id: string;
@@ -238,7 +239,7 @@ export default function AdminFilmsPage() {
 
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="glass-card w-full max-w-lg p-6 relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl my-8">
+          <div className="glass-card w-full max-w-3xl p-6 relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl my-8">
             <button
               onClick={() => setModalOpen(false)}
               className="absolute top-4 right-4 text-muted hover:text-foreground transition-colors cursor-pointer"
@@ -323,16 +324,15 @@ export default function AdminFilmsPage() {
                   className="w-full px-3 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1 text-muted">Description</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-2 focus:ring-accent/40 resize-none"
-                />
-              </div>
+               <RichTextArea
+                 id="film-desc"
+                 label="Description"
+                 value={formData.description}
+                 onChange={(val) => setFormData({ ...formData, description: val })}
+                 placeholder="Enter film description..."
+                 required
+                 rows={8}
+               />
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
